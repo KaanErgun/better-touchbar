@@ -1,0 +1,13 @@
+__pycache__/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p8
+*.p12
+*.lic
+.npmrc
+memo.md
+*-adminsdk*.json
+.claude/settings.local.json
