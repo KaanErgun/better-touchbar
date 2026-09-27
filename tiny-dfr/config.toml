@@ -1,0 +1,26 @@
+# Touch Bar layout for MacBookPro16,2 (Ubuntu 24.04, tiny-dfr 0.3.7).
+# Installed to /etc/tiny-dfr/config.toml; tiny-dfr merges it over the packaged
+# /usr/share/tiny-dfr/config.toml, so only overridden keys live here.
+# macOS style: the control strip is the default layer, holding Fn shows F1-F12
+# (PrimaryLayerKeys stays the packaged F1-F12 row).
+MediaLayerDefault = true
+
+MediaLayerKeys = [
+    { Icon = "brightness_low",  Action = "BrightnessDown" },
+    { Icon = "brightness_high", Action = "BrightnessUp" },
+    # Mission Control -> GNOME overview (tap Super); Launchpad -> app grid (Super+A)
+    { Icon = "mission_control", Action = "LeftMeta" },
+    { Icon = "launchpad",       Action = [ "LeftMeta", "A" ] },
+    { Icon = "backlight_low",   Action = "IllumDown" },
+    { Icon = "backlight_high",  Action = "IllumUp" },
+    { Icon = "fast_rewind",     Action = "PreviousSong" },
+    { Icon = "play_pause",      Action = "PlayPause" },
+    { Icon = "fast_forward",    Action = "NextSong" },
+    { Icon = "volume_off",      Action = "Mute" },
+    { Icon = "volume_down",     Action = "VolumeDown" },
+    { Icon = "volume_up",       Action = "VolumeUp" },
+    # Print (KEY_SYSRQ) opens GNOME's screenshot UI
+    { Icon = "screenshot",      Action = "Sysrq" },
+    { Battery = "both",         Action = "Battery", Stretch = 2 },
+    { Time = "%H:%M",           Action = "Time", Stretch = 2 },
+]
