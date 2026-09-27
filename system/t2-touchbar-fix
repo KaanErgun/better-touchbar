@@ -1,0 +1,26 @@
+#!/bin/sh
+# Keep the Touch Bar alive on MacBookPro16,2 (t2 kernel 7.x); runs at boot and after every resume.
+#
+# Boot: the appletbdrm probe sometimes times out (-110), so tiny-dfr never gets its display.
+#   A slow 0 -> 2 USB config reset of the Touch Bar display (05ac:8302) lets it bind.
+#   Source: github.com/basecamp/omarchy/discussions/5862
+# Resume: t2bce re-registers the Touch Bar DRM device, tiny-dfr's BindsTo= stops it together with
+#   the old device, and nothing starts it again (its udev trigger is the touchpad input, which is
+#   not re-added on resume). Seen 2026-09-27: suspend 17:57, resume 18:03:53, bar dead until fixed.
+udevadm settle --timeout=10
+reset=0
+for d in /sys/bus/usb/devices/*; do
+  [ "$(cat "$d/idVendor" 2>/dev/null):$(cat "$d/idProduct" 2>/dev/null)" = "05ac:8302" ] || continue
+  for _ in 1 2 3 4 5; do ls -d "$d"/*/drm >/dev/null 2>&1 && break; sleep 1; done
+  if ! ls -d "$d"/*/drm >/dev/null 2>&1; then
+    echo 0 > "$d/bConfigurationValue"; sleep 1
+    echo 2 > "$d/bConfigurationValue"; sleep 3
+    reset=1
+  fi
+done
+if [ "$reset" = 1 ]; then
+  systemctl restart tiny-dfr
+else
+  systemctl is-active --quiet tiny-dfr || systemctl start tiny-dfr
+fi
+echo "touchbar: reset=$reset tiny-dfr=$(systemctl is-active tiny-dfr)"

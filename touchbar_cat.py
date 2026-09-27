@@ -288,9 +288,16 @@ def run_cat(args, watch, stop_after=None):
                 return
     except OSError as e:
         print(f"cat mode aborted: {e}", flush=True)
+        # The card vanished (resume re-registers it). Starting tiny-dfr mid-churn lets its BindsTo=
+        # stop it again with the old device, so wait for udev to settle first.
+        subprocess.run(["udevadm", "settle", "--timeout=10"], check=False)
+        time.sleep(2)
     finally:
         if display:
-            display.close()
+            try:
+                display.close()
+            except OSError:
+                pass  # fd of a device that is already gone
         systemctl("start")
         print("cat mode off", flush=True)
 

@@ -1,0 +1,11 @@
+[Unit]
+Description=Bring the T2 Touch Bar back (appletbdrm bind + tiny-dfr) at boot and after resume
+# After= + WantedBy= the sleep targets = run once each time the machine comes back from sleep.
+After=systemd-udevd.service suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/t2-touchbar-fix
+
+[Install]
+WantedBy=multi-user.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target

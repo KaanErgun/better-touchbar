@@ -19,6 +19,10 @@ It is an independent daemon (Python standard library only), not a tiny-dfr patch
 3. On the first input event it releases the card and starts `tiny-dfr.service` again.
    The unit's `ExecStopPost` restarts tiny-dfr even if the daemon crashes.
 
+`system/t2-touchbar-fix` (+ unit) keeps the bar alive on the t2 kernel: at boot it re-enumerates the
+Touch Bar display when appletbdrm's probe times out, and after every resume it restarts tiny-dfr,
+which systemd stops when resume re-registers the display (its `BindsTo=` device goes away).
+
 Tested on MacBookPro16,2, Ubuntu 24.04, t2 kernel 7.2.8.
 
 ## Use

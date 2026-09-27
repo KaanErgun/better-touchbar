@@ -6,6 +6,7 @@ cd "$(dirname "$0")/.."
 python3 -m py_compile touchbar_cat.py cat_art.py
 python3 touchbar_cat.py --self-test
 bash -n scripts/deploy.sh
+sh -n system/t2-touchbar-fix
 # tiny-dfr layout: TOML parses, every key has an Action, every Icon exists (packaged or ours)
 python3 - <<'PY'
 import glob, os, tomllib, xml.etree.ElementTree as ET
