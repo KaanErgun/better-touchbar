@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+- `install.sh` takes verbs (`install`, `uninstall`, `status`; `--uninstall` still works), backs up
+  every file it replaces or removes under `/var/backups/better-touchbar/`, and verifies the service.
+- Development scripts merged into `scripts/dev.sh` (`check`, `deploy`, `status`, `shot`,
+  `screenshots`, `icons`); `scripts/check.sh` stays the gate.
+
 ## [0.1.0] - 2026-09-29
 
 First public release.

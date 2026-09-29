@@ -91,3 +91,19 @@ geçmişte gizli bilgi 0, yapay zekâ imzası 0.
 `docs/arsiv/2026-09-fazlar-0-5.md`; kodda karar atıfları; kapıya `CLAUDE.md` ≤120 satır denetimi.
 Kod davranışı değişmedi.
 **Sonuç:** ✅ Kapı exit 0 (self-test, 51 düzen tuşu, 39 ikon, belge denetimi).
+
+---
+
+## 2026-09-29 — Betikler `~/Developments` §7 iskeletine
+**Yapıldı:** `scripts/dev.sh` fiil dağıtıcı (`check`, `deploy`, `status`, `shot`, `screenshots`, `icons`; macOS
+bash 3.2), `scripts/check.sh` ona sarmalayıcı; `scripts/deploy.sh` ve `scripts/fetch-icons.sh` kaldırıldı.
+`install.sh` fiillere geçti (`install`/`uninstall`/`status`, eski `--uninstall` de çalışır): renkli numaralı
+adımlar, özet, değiştirilen/silinen her dosyanın `/var/backups/better-touchbar/<zaman>/` yedeği, `put()` ile
+idempotent kurulum, sonunda servis doğrulaması. Kapıdaki SVG denetimi XML ayrıştırmadan (defusedxml
+bağımlılığı eklemeden, K-006) yapılıyor.
+**Sonuç:** ✅ `/bin/bash` 3.2.57 ile: `dev.sh check` exit 0; `deploy` 8/8 adım, 4 dosya değişti + 4 yedek
+(`20260929-102717`); ikinci `deploy` **0 dosya değişti**; `status` touchbar active, eklenti ACTIVE, yardımcı 1;
+`shot` PNG kontrol şeridini gösterdi.
+**Çıkmaz:** `status` yardımcı için "2 process" gösterdi.
+**Neden:** `runuser` sarmalayıcısının komut satırında da `tb_agent.py` geçiyor.
+**Kural:** Süreç sayarken sarmalayıcıyı dışla (`pgrep -fa … | grep -vc runuser`) — kodda uygulandı.

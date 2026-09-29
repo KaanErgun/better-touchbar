@@ -17,13 +17,12 @@ yorumlar, commit mesajları ve `README.md` İngilizce (public repo).
 ## Komutlar
 
 ```sh
-./scripts/check.sh                                   # KAPI: derleme, self-test, düzen/ikon denetimi, bu dosyanın boyu
-scripts/deploy.sh <host> --update-config --turkish   # hosta YAZAR → her seferinde Kaan'a sor
-./install.sh [--turkish] [--update-config] | --uninstall      # hedef makinede
-python3 touchbar.py --render-test | --screenshots docs/screenshots   # hedefte (gi/cairo orada)
-sudo tools/fbshot.py bar.png                         # Touch Bar'da ne var → PNG
-sudo tools/touch_sim.py seq "tap X" "drag A B" "shot f.png"          # elsiz dokunma
-scripts/fetch-icons.sh                               # icons/ yeniden üret
+./scripts/check.sh                                       # KAPI (= scripts/dev.sh check)
+scripts/dev.sh deploy <host> --update-config --turkish   # hosta YAZAR → her seferinde Kaan'a sor
+scripts/dev.sh status|shot|screenshots <host>            # salt-okuma / Touch Bar PNG / README görselleri
+scripts/dev.sh icons                                     # icons/ yeniden üret
+./install.sh [install] [--turkish] [--update-config] | uninstall | status   # hedef makinede
+sudo tools/touch_sim.py seq "tap X" "drag A B" "shot f.png"                  # hedefte, elsiz dokunma
 ```
 
 Kapı hiçbir hosta dokunmaz ve çizim yapmaz; çizim `install.sh` 3. adımında hedefte test edilir.
@@ -36,8 +35,8 @@ Kapı hiçbir hosta dokunmaz ve çizim yapmaz; çizim `install.sh` 3. adımında
 3. Geometri ve durum `touchbar.py`'de; `tb_ui.py` yalnız boyar. Test edilen mantık `gi` import
    etmez — geliştirme Mac'inde `gi` yok, kapı orada koşar.
 4. Kişisel ad, host, kullanıcı koda gömülmez: oturum sahibi logind'den (K-003), deploy hedefi argüman.
-5. `docs/screenshots/` `touchbar.py --screenshots`, `icons/` `scripts/fetch-icons.sh` çıktısıdır;
-   elle düzenlenmez.
+5. `docs/screenshots/` `dev.sh screenshots`, `icons/` `dev.sh icons` çıktısıdır; elle düzenlenmez.
+   Betikler `~/Developments` §7 iskeletinde; `dev.sh` macOS bash 3.2'de koşar (`/bin/bash` ile sına).
 6. Donanımda sına: `touch_sim` + `fbshot`. Dokunacağın x'in o katmanda hangi tuşa düştüğünü hesapla
    (sessiz, mikrofon, harfler kullanıcının oturumunu etkiler); değiştirdiğin değeri geri al.
 7. Push, etiket, görünürlük dışa dönük: her seferinde Kaan'a sor. Sürüm = CHANGELOG + annotated tag.
@@ -78,7 +77,7 @@ Kapı hiçbir hosta dokunmaz ve çizim yapmaz; çizim `install.sh` 3. adımında
     F-tuşlu düzen işlemez (K-005).
 11. **Kimlik bilgisi taraması** "passwordless", "getent passwd" gibi kelimelerde yanlış alarm verir;
     eşleşen satırı okuyup karar ver.
-12. **`scripts/deploy.sh` `git ls-files` ile paketler**: `git add` edilmemiş yeni dosya hedefe gitmez.
+12. **`dev.sh deploy/screenshots` `git ls-files` ile paketler**: `git add` edilmemiş yeni dosya hedefe gitmez.
 13. **MPRIS konum sinyali yok** → agent saniyede bir sorar. `DesktopEntry` ("google-chrome") ile odak
     app id ("google-chrome.desktop") normalize edilip eşleştirilir.
 14. **Görünürlük değişiminden hemen sonra** `git ls-remote` 403 "repository is disabled" dönebilir;

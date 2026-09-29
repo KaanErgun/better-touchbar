@@ -68,7 +68,8 @@ Katman önceliği (ilk eşleşen kazanır): **Fn** → **overlay** (slider / hı
 | `cat_art.py` | Kedi çizimi (şekillerden) ve jestler |
 | `gnome-extension/` | Odaktaki uygulamayı D-Bus'a veren Shell eklentisi |
 | `system/` | systemd birimleri, tiny-dfr drop-in, `t2-touchbar-fix` |
-| `install.sh` | Kurulum, güncelleme, kaldırma (hedef makinede) |
+| `install.sh` | Hedef makinede `install` / `uninstall` / `status`; değiştirdiğini `/var/backups/better-touchbar/<zaman>/`'a yedekler |
+| `scripts/dev.sh` | Geliştirme Mac'inde `check` / `deploy` / `status` / `shot` / `screenshots` / `icons` (bash 3.2); `scripts/check.sh` kapıya sarmalayıcı |
 | `tools/` | `fbshot.py` (ekran → PNG), `touch_sim.py` (sanal dokunma) |
 
 ---
@@ -83,7 +84,7 @@ Katman önceliği (ilk eşleşen kazanır): **Fn** → **overlay** (slider / hı
 | K-004 | 2026-09-29 | Odak bilgisi kendi GNOME Shell eklentimizden (D-Bus) | Wayland'da `org.gnome.Shell.Eval` kapalı, başka yol yok | `gnome-extension/`, `tb_agent.py` `FOCUS` |
 | K-005 | 2026-09-29 | Türkçe harfler hazır `tr+alt` (Turkish Alt-Q) düzeni + AltGr; özel XKB düzeni yok | Tüm uygulamalarda keysym düzeyinde çalışır; `inet(evdev)` F13–F24'ü ezdiği için F-tuşlu özel düzen işlemez | `touchbar.py` `TURKISH`, `install.sh --turkish` |
 | K-006 | 2026-09-29 | Yeni bağımlılık yok: stdlib + Ubuntu'da hazır gi/cairo/librsvg/Pango; DRM/evdev/uinput ham ioctl | pip/venv'siz kurulum, public kullanıcı için tek komut | `tb_hw.py`, `install.sh` 1. adım |
-| K-007 | 2026-09-29 | Public, MIT; ikonlar Material Symbols (Apache-2.0) repoda, `scripts/fetch-icons.sh` üretir | Kendi kendine yeten repo, tiny-dfr paketine bağımlılık yok | `LICENSE`, `icons/LICENSE`, `scripts/fetch-icons.sh` |
+| K-007 | 2026-09-29 | Public, MIT; ikonlar Material Symbols (Apache-2.0) repoda, `dev.sh icons` üretir | Kendi kendine yeten repo, tiny-dfr paketine bağımlılık yok | `LICENSE`, `icons/LICENSE`, `scripts/dev.sh` |
 | K-008 | 2026-09-29 | `install.sh` düzenlenmiş `touchbar.toml`'u ezmez; `--update-config` tarihli kopya bırakıp yazar | Kullanıcı ayarı güncellemede kaybolmamalı | `install.sh` 2. adım |
 | K-009 | 2026-09-29 | Kedi medya çalarken çıkmaz; kediyi kapatan ilk dokunuş hiçbir tuşa basmaz | Video izlerken kontroller gizlenmesin; uyandırma dokunuşu kazara eylem yapmasın | `touchbar.py` `run()`, `wake()` |
 | K-010 | 2026-09-29 | Medya katmanı eklenti varsa yalnız oynatıcının penceresi odaktayken, yoksa "bir şey çalıyorsa" | Kaan'ın tarifi: "odak videodaysa video kontrolleri"; eklentisiz kurulumda da işe yarasın | `touchbar.py` `media_mode()` |

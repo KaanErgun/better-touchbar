@@ -55,7 +55,9 @@ Log out and back in once so GNOME Shell loads the focus extension. Without it ev
 except that media controls show up whenever something plays (not only for the focused app) and
 there are no per-app buttons.
 
-Remove it again with `./install.sh --uninstall`; tiny-dfr takes the bar back.
+`./install.sh status` shows what is running; `./install.sh uninstall` removes it and tiny-dfr
+takes the bar back. Every file the installer replaces or removes is kept under
+`/var/backups/better-touchbar/<timestamp>/`.
 
 ## Configure
 
@@ -110,11 +112,12 @@ On a model whose panel or touch digitizer runs the other way, add `--flip-along`
 ## Development
 
 ```sh
-./scripts/check.sh                        # hardware-free gate: ABI sizes, layouts, logic
-scripts/deploy.sh <ssh-host> [options]    # ship this checkout to a MacBook and install
-python3 touchbar.py --render-test         # draw every layer off-screen (needs pycairo)
-python3 touchbar.py --screenshots docs/screenshots
-scripts/fetch-icons.sh                    # regenerate icons/ from Material Symbols
+./scripts/check.sh                         # hardware-free gate: ABI sizes, layouts, logic, docs
+scripts/dev.sh deploy <ssh-host> [options] # ship this checkout to a MacBook, install, assert
+scripts/dev.sh status <ssh-host>           # what is running there (read-only)
+scripts/dev.sh shot <ssh-host> [out.png]   # what its Touch Bar shows right now
+scripts/dev.sh screenshots <ssh-host>      # regenerate docs/screenshots with the real drawing code
+scripts/dev.sh icons                       # regenerate icons/ from Material Symbols
 ```
 
 Design notes, decisions and the development log are kept in Turkish: `development.md`,

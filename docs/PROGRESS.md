@@ -1,6 +1,6 @@
 # PROGRESS — better-touchbar
 
-Tek yaşayan durum çizelgesi. Ölçüm: 2026-09-29, `main` 5d39fba (v0.1.0) + belge seti.
+Tek yaşayan durum çizelgesi. Ölçüm: 2026-09-29 (v0.1.0 + belge seti + betik iskeleti).
 Kapsam ve kararlar `development.md`'de; kanıtlar `dev-log.md`'de.
 
 ## Yayın
@@ -26,5 +26,5 @@ Kapsam ve kararlar `development.md`'de; kanıtlar `dev-log.md`'de.
 - [ ] Kaan testi: Chrome'da YouTube — pencere odaktayken medya katmanı, başka pencerede yok
 - [ ] Kaan testi: ses slider'ını parmakla sürükleme
 - [ ] Pilde gerçek kullanımda uzun uyku/uyanma (rtcwake testleri geçti)
-- [ ] `scripts/` betiklerini `~/Developments` §7 iskeletine hizalama (fiil dağıtıcı, step/ok/fail, özet) — plansız iş, onay bekliyor
+- [x] Betikler `~/Developments` §7 iskeletinde: `scripts/dev.sh` fiil dağıtıcı, `install.sh` fiiller + yedek + idempotent (2026-09-29)
 - [ ] Başka T2 modeli (16,1 / 15,x) — donanım yok; `--flip-along` / `--touch-flip` bayrakları hazır
