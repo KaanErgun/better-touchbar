@@ -1,0 +1,36 @@
+# Touch Bar layout for touchbar.py (installed to /etc/touchbar/touchbar.toml).
+# Each button shows exactly one of: icon (svg name from /etc/tiny-dfr or /usr/share/tiny-dfr),
+# text, time (strftime format) or battery = true. `key` is a Linux input key name
+# (without KEY_) or a list for a combo; `stretch` makes a button that many slots wide.
+
+bar_brightness = 2      # appletb_backlight level while buttons are shown (0-2)
+cat_brightness = 1      # while the idle cat is out
+idle_seconds = 60       # no keyboard/trackpad/Touch Bar input for this long -> cat
+
+# Default layer (macOS control strip). Mission Control -> GNOME overview (tap Super),
+# Launchpad -> app grid (Super+A), screenshot -> Print (SYSRQ) opens GNOME's screenshot UI.
+control = [
+    { icon = "brightness_low",  key = "BRIGHTNESSDOWN" },
+    { icon = "brightness_high", key = "BRIGHTNESSUP" },
+    { icon = "mission_control", key = "LEFTMETA" },
+    { icon = "launchpad",       key = ["LEFTMETA", "A"] },
+    { icon = "backlight_low",   key = "KBDILLUMDOWN" },
+    { icon = "backlight_high",  key = "KBDILLUMUP" },
+    { icon = "fast_rewind",     key = "PREVIOUSSONG" },
+    { icon = "play_pause",      key = "PLAYPAUSE" },
+    { icon = "fast_forward",    key = "NEXTSONG" },
+    { icon = "volume_off",      key = "MUTE" },
+    { icon = "volume_down",     key = "VOLUMEDOWN" },
+    { icon = "volume_up",       key = "VOLUMEUP" },
+    { icon = "screenshot",      key = "SYSRQ" },
+    { battery = true,           stretch = 2 },
+    { time = "%H:%M",           stretch = 2 },
+]
+
+# Shown while Fn is held.
+fn = [
+    { text = "F1",  key = "F1" },  { text = "F2",  key = "F2" },  { text = "F3",  key = "F3" },
+    { text = "F4",  key = "F4" },  { text = "F5",  key = "F5" },  { text = "F6",  key = "F6" },
+    { text = "F7",  key = "F7" },  { text = "F8",  key = "F8" },  { text = "F9",  key = "F9" },
+    { text = "F10", key = "F10" }, { text = "F11", key = "F11" }, { text = "F12", key = "F12" },
+]

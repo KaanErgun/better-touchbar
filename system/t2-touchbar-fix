@@ -1,12 +1,13 @@
 #!/bin/sh
 # Keep the Touch Bar alive on MacBookPro16,2 (t2 kernel 7.x); runs at boot and after every resume.
 #
-# Boot: the appletbdrm probe sometimes times out (-110), so tiny-dfr never gets its display.
+# Boot: the appletbdrm probe sometimes times out (-110), so nothing gets the display.
 #   A slow 0 -> 2 USB config reset of the Touch Bar display (05ac:8302) lets it bind.
 #   Source: github.com/basecamp/omarchy/discussions/5862
-# Resume: t2bce re-registers the Touch Bar DRM device, tiny-dfr's BindsTo= stops it together with
-#   the old device, and nothing starts it again (its udev trigger is the touchpad input, which is
-#   not re-added on resume). Seen 2026-09-27: suspend 17:57, resume 18:03:53, bar dead until fixed.
+# Resume: t2bce re-registers the Touch Bar DRM device and input devices; the daemon holding the
+#   old card is left with a dead fd (and tiny-dfr was even stopped by its BindsTo=). Seen
+#   2026-09-27: suspend 17:57, resume 18:03:53, bar dead until fixed. Restarting the owner
+#   after udev has settled is the cheap, certain way back.
 udevadm settle --timeout=10
 reset=0
 for d in /sys/bus/usb/devices/*; do
@@ -18,9 +19,8 @@ for d in /sys/bus/usb/devices/*; do
     reset=1
   fi
 done
-if [ "$reset" = 1 ]; then
-  systemctl restart tiny-dfr
-else
-  systemctl is-active --quiet tiny-dfr || systemctl start tiny-dfr
-fi
-echo "touchbar: reset=$reset tiny-dfr=$(systemctl is-active tiny-dfr)"
+# touchbar-fallback.service sets the flag when touchbar.service keeps failing: tiny-dfr owns the bar then
+owner=touchbar.service
+[ -e /run/touchbar-fallback ] && owner=tiny-dfr.service
+systemctl restart "$owner"
+echo "touchbar: reset=$reset owner=$owner $(systemctl is-active "$owner")"

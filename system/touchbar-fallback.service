@@ -1,0 +1,8 @@
+[Unit]
+Description=Fall back to tiny-dfr when touchbar.service keeps failing
+
+[Service]
+Type=oneshot
+# tiny-dfr's drop-in only lets it start while this flag exists; /run is empty again after reboot.
+ExecStart=/usr/bin/touch /run/touchbar-fallback
+ExecStart=/usr/bin/systemctl --no-block start tiny-dfr.service

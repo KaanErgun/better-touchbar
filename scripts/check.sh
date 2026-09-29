@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# Canonical local gate. Hardware-free: DRM ABI sizes, every gesture pose, pixel mapping.
-# Not covered: real Touch Bar output — run `touchbar_cat.py --demo 30` on the Mac for that.
+# Canonical local gate. Hardware-free: DRM/evdev/uinput ABI sizes, key table, bar<->buffer
+# mapping, layout + hit testing, the touchbar.toml layout, every cat pose.
+# Not covered here: drawing (pycairo/Pango/librsvg are only on the Mac) -- deploy.sh runs
+# `touchbar.py --render-test` there before touching services; real panel output needs eyes.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-python3 -m py_compile touchbar_cat.py cat_art.py
-python3 touchbar_cat.py --self-test
+python3 -m py_compile touchbar.py tb_hw.py tb_ui.py cat_art.py
+python3 touchbar.py --config touchbar.toml --self-test
 bash -n scripts/deploy.sh
 sh -n system/t2-touchbar-fix
 # tiny-dfr layout: TOML parses, every key has an Action, every Icon exists (packaged or ours)
