@@ -117,6 +117,9 @@ python3 touchbar.py --screenshots docs/screenshots
 scripts/fetch-icons.sh                    # regenerate icons/ from Material Symbols
 ```
 
+Design notes, decisions and the development log are kept in Turkish: `development.md`,
+`CLAUDE.md`, `dev-log.md`, `docs/PROGRESS.md`.
+
 ## Credits
 
 - The [t2linux](https://t2linux.org) community, for the kernel, the wiki and the Touch Bar

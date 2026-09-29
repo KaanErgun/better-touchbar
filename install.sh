@@ -49,7 +49,7 @@ missing=$(for p in python3-gi python3-gi-cairo python3-cairo gir1.2-rsvg-2.0 gir
   dpkg-query -W -f='${Status}\n' "$p" 2>/dev/null | grep -q "ok installed" || echo "$p"; done)
 [ -z "$missing" ] || sudo apt-get install -y $missing
 
-step 2/7 "installing the daemon, icons and config"
+step 2/7 "installing the daemon, icons and config"   # an edited config is never overwritten (K-008)
 sudo install -d "$LIB/icons" /etc/touchbar "$UNITS/tiny-dfr.service.d"
 sudo install -m 644 -t "$LIB" touchbar.py tb_hw.py tb_ui.py tb_agent.py cat_art.py
 sudo install -m 644 -t "$LIB/icons" icons/*.svg icons/LICENSE

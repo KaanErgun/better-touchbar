@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Regenerate icons/ from Google's Material Symbols (Rounded, filled), recoloured white for the
-# black Touch Bar. The SVGs in icons/ are generated: edit this list, do not edit the files.
+# black Touch Bar (K-007). The SVGs in icons/ are generated: edit this list, do not edit the files.
 # Usage: scripts/fetch-icons.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."

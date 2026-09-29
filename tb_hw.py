@@ -1,6 +1,6 @@
 """Hardware access for the T2 Touch Bar: appletbdrm display, evdev input, uinput keyboard.
 
-Standard library only, except Display.context() which needs pycairo (present on the Mac, not
+Standard library only (K-006), except Display.context() which needs pycairo (present on the Mac, not
 on the dev machine, so it is imported lazily and the rest stays testable anywhere).
 """
 import ctypes

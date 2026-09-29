@@ -2,8 +2,8 @@
 """Session-side helper for touchbar.py: media players, volume, focus and quick settings.
 
 These live on the logged-in user's session (D-Bus session bus, PipeWire, GSettings), which
-the root daemon cannot reach, so the daemon starts this as that user (runuser) and talks JSON
-lines with it: commands on stdin, state on stdout.
+the root daemon cannot reach, so the daemon starts this as that user (runuser, K-003) and talks
+JSON lines with it: commands on stdin, state on stdout.
 
   -> {"c": "media", "action": "PlayPause" | "Next" | "Previous"}
   -> {"c": "seek", "position": seconds}
@@ -32,8 +32,8 @@ PLAYER = "org.mpris.MediaPlayer2.Player"
 ROOT = "org.mpris.MediaPlayer2"
 PROPS = "org.freedesktop.DBus.Properties"
 DBUS = ("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus")
-# Exported by our GNOME Shell extension (gnome-extension/): GNOME on Wayland has no other way
-# to ask which window has focus.
+# Exported by our GNOME Shell extension (gnome-extension/, K-004): GNOME on Wayland has no other
+# way to ask which window has focus.
 FOCUS = ("org.gnome.Shell", "/org/gnome/Shell/Extensions/TouchBar", "org.gnome.Shell.Extensions.TouchBar")
 NOTIFICATIONS = ("org.gnome.desktop.notifications", "show-banners")
 NIGHT_LIGHT = ("org.gnome.settings-daemon.plugins.color", "night-light-enabled")

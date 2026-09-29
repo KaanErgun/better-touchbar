@@ -10,7 +10,8 @@ What is on the bar, first match wins:
   control   the control strip
 After idle_seconds without input, and with nothing playing, the idle cat (cat_art.py) comes out.
 Runs as root under systemd; session-side state (media, volume, focus, settings) comes from
-tb_agent.py, which it runs as the logged-in user.
+tb_agent.py, which it runs as the logged-in user. An independent implementation: no tiny-dfr
+code (K-001). Design decisions K-xxx: development.md.
 """
 import argparse
 import fcntl
@@ -41,7 +42,7 @@ SLIDER_ICONS = {"brightness": "light_mode", "keyboard": "backlight_high", "volum
 SLIDER_CLOSE, LAYER_CLOSE, PAUSED_KEEP = 3.0, 8.0, 10.0
 ACCENT = (0.13, 0.42, 0.85)   # a quick setting that is on
 ALERT = (0.80, 0.18, 0.18)    # live microphone
-# Turkish letters via the "Turkish (Alt-Q)" layout (tr+alt): US keys, Turkish on AltGr.
+# Turkish letters via the "Turkish (Alt-Q)" layout (tr+alt): US keys, Turkish on AltGr (K-005).
 # (lower, upper, base key); a Shift held on the real keyboard makes the AltGr combo uppercase.
 TURKISH = (("ş", "Ş", "S"), ("ğ", "Ğ", "G"), ("ü", "Ü", "U"), ("ö", "Ö", "O"),
            ("ç", "Ç", "C"), ("ı", "I", "I"), ("İ", "İ", "I"))
@@ -160,7 +161,7 @@ def session_user():
 
 
 class AgentLink:
-    """tb_agent.py as the session user; restarted when it dies or the session changes."""
+    """tb_agent.py as the session user (K-003); restarted when it dies or the session changes."""
 
     def __init__(self):
         self.proc, self.buf, self.next_try = None, b"", 0.0
@@ -295,7 +296,7 @@ class TouchBar:
         self.overlay, self.overlay_until, self.overlay_timeout = None, 0.0, 0.0
         self.drag, self.pressed, self.held = None, None, []
         self.touch_x, self.touch_down, self.was_down = 0, False, False
-        self.ignore_touch = False  # the tap that woke the bar from the cat presses nothing
+        self.ignore_touch = False  # K-009: the tap that woke the bar from the cat presses nothing
         self.last_input = time.monotonic()
         self.dirty, self.shown_minute = True, None
         self.values = {"volume": None, "brightness": None, "keyboard": None}
@@ -314,7 +315,7 @@ class TouchBar:
         m = self.media
         if not m or self.media_dismissed:
             return False
-        if self.focus is not None:  # Shell extension present: follow the focused window
+        if self.focus is not None:  # K-010: Shell extension present, follow the focused window
             return same_app(m.get("app"), self.focus) and m.get("status") in ("Playing", "Paused")
         return self.playing() or (m.get("status") == "Paused"
                                   and time.monotonic() - self.paused_at < PAUSED_KEEP)
@@ -708,7 +709,7 @@ class TouchBar:
                     self.render()
                 self.flush_volume()
                 idle_left = idle - (now - self.last_input)
-                if idle_left <= 0 and not self.touch_down and not self.playing():
+                if idle_left <= 0 and not self.touch_down and not self.playing():  # K-009
                     self.wake(self.run_cat())
                     continue
                 # <= 5 s so poll() rescans hot-plugged inputs (resume, re-enumeration)
@@ -784,7 +785,7 @@ def self_test(config):
     assert not same_app("", "code.desktop")
     assert turkish_codes(0, False) == [k["RIGHTALT"], k["S"]]
     assert turkish_codes(5, True) == [k["I"]] and turkish_codes(6, False) == [k["RIGHTALT"], k["LEFTSHIFT"], k["I"]]
-    # which layer wins
+    # which layer wins (K-010: media follows focus when the extension is there)
     bar = _state(cfg)
     assert bar.current()[0] == "control"
     bar.focus = "code.desktop"

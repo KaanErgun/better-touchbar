@@ -9,6 +9,9 @@ python3 -m py_compile touchbar.py tb_hw.py tb_ui.py tb_agent.py cat_art.py tools
 python3 touchbar.py --config touchbar.toml --self-test
 bash -n scripts/deploy.sh install.sh scripts/fetch-icons.sh
 sh -n system/t2-touchbar-fix
+# project docs: CLAUDE.md stays a short rulebook (~/Developments rule: <= 120 lines)
+[ "$(wc -l < CLAUDE.md)" -le 120 ] || { echo "CLAUDE.md is longer than 120 lines" >&2; exit 1; }
+for doc in development.md dev-log.md docs/PROGRESS.md; do [ -s "$doc" ] || { echo "missing $doc" >&2; exit 1; }; done
 # layouts: every icon exists (icons/ or tiny-dfr's packaged set); the extension metadata parses
 python3 - <<'PY'
 import glob, os, tomllib, xml.etree.ElementTree as ET
