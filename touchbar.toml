@@ -1,30 +1,46 @@
 # Touch Bar layout for touchbar.py (installed to /etc/touchbar/touchbar.toml).
-# Each button shows exactly one of: icon (svg name from /etc/tiny-dfr or /usr/share/tiny-dfr),
-# text, time (strftime format) or battery = true. `key` is a Linux input key name
-# (without KEY_) or a list for a combo; `stretch` makes a button that many slots wide.
+#
+# A button shows exactly one of:
+#   icon = "name"        an SVG from icons/ (Material Symbols) or /usr/share/tiny-dfr
+#   text = "..."   time = "%H:%M" (strftime)   battery = true
+# and does at most one of:
+#   key = "NAME" or ["MOD", ..., "NAME"]   Linux input key names without KEY_; held while touched
+#   slider = "brightness" | "keyboard" | "volume"   tap to open, or touch and slide right away
+#   layer = "quick" | "turkish"            quick settings / Turkish letters
+#   toggle = "mic"                         mic mute (the key turns red while the mic is live)
+# stretch = N makes a button N slots wide.
 
 bar_brightness = 2      # appletb_backlight level while buttons are shown (0-2)
 cat_brightness = 1      # while the idle cat is out
 idle_seconds = 60       # no keyboard/trackpad/Touch Bar input for this long -> cat
 
-# Default layer (macOS control strip). Mission Control -> GNOME overview (tap Super),
-# Launchpad -> app grid (Super+A), screenshot -> Print (SYSRQ) opens GNOME's screenshot UI.
+# The default layer: a macOS-style control strip.
 control = [
-    { icon = "brightness_low",  key = "BRIGHTNESSDOWN" },
-    { icon = "brightness_high", key = "BRIGHTNESSUP" },
-    { icon = "mission_control", key = "LEFTMETA" },
-    { icon = "launchpad",       key = ["LEFTMETA", "A"] },
-    { icon = "backlight_low",   key = "KBDILLUMDOWN" },
-    { icon = "backlight_high",  key = "KBDILLUMUP" },
-    { icon = "fast_rewind",     key = "PREVIOUSSONG" },
-    { icon = "play_pause",      key = "PLAYPAUSE" },
-    { icon = "fast_forward",    key = "NEXTSONG" },
-    { icon = "volume_off",      key = "MUTE" },
-    { icon = "volume_down",     key = "VOLUMEDOWN" },
-    { icon = "volume_up",       key = "VOLUMEUP" },
-    { icon = "screenshot",      key = "SYSRQ" },
-    { battery = true,           stretch = 2 },
-    { time = "%H:%M",           stretch = 2 },
+    { icon = "settings",          layer = "quick" },
+    { icon = "light_mode",        slider = "brightness" },
+    { icon = "backlight_high",    slider = "keyboard" },
+    { icon = "overview_key",      key = "LEFTMETA" },                # Mission Control -> overview
+    { icon = "apps",              key = ["LEFTMETA", "A"] },         # Launchpad -> app grid
+    { icon = "skip_previous",     key = "PREVIOUSSONG" },
+    { icon = "play_arrow",        key = "PLAYPAUSE" },               # shows pause while playing
+    { icon = "skip_next",         key = "NEXTSONG" },
+    { icon = "volume_off",        key = "MUTE" },
+    { icon = "volume_up",         slider = "volume" },
+    { icon = "mic",               toggle = "mic" },
+    { icon = "screenshot_region", key = "SYSRQ" },                   # Print -> GNOME screenshot UI
+    { text = "TR",                layer = "turkish" },
+    { battery = true,             stretch = 2 },
+    { time = "%H:%M",             stretch = 2 },
+]
+
+# Right-hand part of the bar while an app from [apps] has focus.
+compact = [
+    { icon = "light_mode",        slider = "brightness" },
+    { icon = "volume_off",        key = "MUTE" },
+    { icon = "volume_up",         slider = "volume" },
+    { icon = "mic",               toggle = "mic" },
+    { text = "TR",                layer = "turkish" },
+    { icon = "settings",          layer = "quick" },
 ]
 
 # Shown while Fn is held.
@@ -33,4 +49,32 @@ fn = [
     { text = "F4",  key = "F4" },  { text = "F5",  key = "F5" },  { text = "F6",  key = "F6" },
     { text = "F7",  key = "F7" },  { text = "F8",  key = "F8" },  { text = "F9",  key = "F9" },
     { text = "F10", key = "F10" }, { text = "F11", key = "F11" }, { text = "F12", key = "F12" },
+]
+
+# Per-app buttons, keyed by desktop app id (without .desktop), shown left of `compact`
+# while that app's window has focus (needs the GNOME Shell extension in gnome-extension/).
+[apps]
+"code" = [                                                          # Visual Studio Code
+    { icon = "play_arrow",          key = "F5" },                           # run / debug
+    { icon = "terminal",            key = ["LEFTCTRL", "GRAVE"] },          # toggle terminal
+    { icon = "search",              key = ["LEFTCTRL", "P"] },              # go to file
+    { icon = "keyboard_command_key", key = ["LEFTCTRL", "LEFTSHIFT", "P"] }, # command palette
+    { icon = "comment",             key = ["LEFTCTRL", "SLASH"] },          # toggle comment
+    { icon = "format_align_left",   key = ["LEFTCTRL", "LEFTSHIFT", "I"] }, # format document
+]
+"google-chrome" = [
+    { icon = "arrow_back",    key = ["LEFTALT", "LEFT"] },
+    { icon = "arrow_forward", key = ["LEFTALT", "RIGHT"] },
+    { icon = "refresh",       key = ["LEFTCTRL", "R"] },
+    { icon = "add",           key = ["LEFTCTRL", "T"] },
+    { icon = "chevron_left",  key = ["LEFTCTRL", "PAGEUP"] },
+    { icon = "chevron_right", key = ["LEFTCTRL", "PAGEDOWN"] },
+    { icon = "link",          key = ["LEFTCTRL", "L"] },
+]
+"org.gnome.Terminal" = [
+    { icon = "add",           key = ["LEFTCTRL", "LEFTSHIFT", "T"] },  # new tab
+    { icon = "content_copy",  key = ["LEFTCTRL", "LEFTSHIFT", "C"] },
+    { icon = "content_paste", key = ["LEFTCTRL", "LEFTSHIFT", "V"] },
+    { icon = "backspace",     key = ["LEFTCTRL", "L"] },                # clear screen
+    { icon = "cancel",        key = ["LEFTCTRL", "C"] },                # interrupt
 ]

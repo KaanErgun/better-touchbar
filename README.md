@@ -1,40 +1,130 @@
-# touchbar-cat
+# better-touchbar
 
-A chibi cat pops up on the Touch Bar of a T2 MacBook running Linux whenever the machine
-has been idle for a while: it rises at a random spot, does something cute, sinks, and shows
-up somewhere else a few seconds later. Touch the bar or use the keyboard/trackpad and the
-normal `tiny-dfr` buttons come straight back.
+A better Touch Bar for Ubuntu on Intel MacBooks with the T2 chip: a macOS-style control strip
+with real sliders, media controls that follow the focused app, per-app buttons, quick settings,
+Turkish letters, and a chibi cat that shows up when you leave the machine alone.
 
-Gestures (`cat_art.GESTURES`): `pati_yalama` (paw licking), `dik_dik_bakma` (intense
-stare), `yavas_goz_kirpma` (slow blink + heart), `esneme` (yawn), `yogurma` (kneading),
-`uyuklama` (dozing off, then startled awake). The head is drawn from shapes in
-`cat_art.py`; a gesture is a timed list of poses.
+![Control strip](docs/screenshots/control.png)
+![Volume slider](docs/screenshots/slider.png)
+![Media controls](docs/screenshots/media.png)
+![VS Code buttons](docs/screenshots/app.png)
+![Quick settings](docs/screenshots/quick.png)
+![Idle cat](docs/screenshots/cat.png)
 
-It is an independent daemon (Python standard library only), not a tiny-dfr patch:
+*All images are rendered by the daemon's own drawing code (`touchbar.py --screenshots`).*
 
-1. It watches the internal keyboard, trackpad, Touch Bar touchpad and tiny-dfr's virtual
-   input device for activity.
-2. After `--idle` seconds of silence it stops `tiny-dfr.service`, becomes DRM master of the
-   `appletbdrm` card and plays cat scenes in a dumb buffer.
-3. On the first input event it releases the card and starts `tiny-dfr.service` again.
-   The unit's `ExecStopPost` restarts tiny-dfr even if the daemon crashes.
+## Features
 
-`system/t2-touchbar-fix` (+ unit) keeps the bar alive on the t2 kernel: at boot it re-enumerates the
-Touch Bar display when appletbdrm's probe times out, and after every resume it restarts tiny-dfr,
-which systemd stops when resume re-registers the display (its `BindsTo=` device goes away).
+- **Control strip** by default, **F1–F12** while Fn is held.
+- **Sliders** for screen brightness, keyboard backlight and volume. Tap to open one, or touch
+  the key and keep sliding, like on macOS.
+- **Media controls** appear when the focused app plays something (anything that speaks MPRIS:
+  Chrome, Firefox, VLC, Spotify...): previous / play-pause / next, title and artist, a timeline
+  you can drag to seek, and volume.
+- **Per-app buttons** for the focused app: VS Code, Google Chrome and GNOME Terminal out of the
+  box; add your own in `touchbar.toml`.
+- **Quick settings**: Wi-Fi, Bluetooth, Do Not Disturb, Night Light and the microphone. The mic
+  key turns red while the microphone is live.
+- **Turkish letters** ş ğ ü ö ç ı İ (uppercase while Shift is held) through the
+  *Turkish (Alt-Q)* layout, which also puts them on AltGr on the physical keyboard.
+- **Battery and clock.**
+- **Idle cat**: after a minute without input a pixel cat pops up at random spots and licks its
+  paw, stares, slow-blinks, yawns, kneads or dozes off. The first touch brings the buttons back
+  (and presses nothing). It stays away while media is playing.
+- **Robust**: survives suspend/resume and the Touch Bar display's flaky probe at boot, and hands
+  the bar to tiny-dfr if it ever keeps crashing.
 
-Tested on MacBookPro16,2, Ubuntu 24.04, t2 kernel 7.2.8.
+## Requirements
 
-## Use
+- An Intel MacBook with the T2 chip and a Touch Bar. Tested on a MacBookPro16,2 (13", 2020).
+- Ubuntu 24.04 or later with the [t2linux](https://wiki.t2linux.org) kernel (`appletbdrm`,
+  `t2bce`), GNOME on Wayland.
+- Python 3.11+, python3-gi, pycairo, librsvg and Pango: all preinstalled on Ubuntu desktop.
+- [tiny-dfr](https://github.com/AsahiLinux/tiny-dfr) is optional; if installed, it becomes the
+  fallback.
+
+## Install
 
 ```sh
-./scripts/check.sh                      # hardware-free gate
-./scripts/deploy.sh user@host           # install + enable the systemd service
-sudo python3 /usr/local/lib/touchbar-cat/touchbar_cat.py --demo 30 [--only esneme]   # on the Mac
+git clone https://github.com/KaanErgun/better-touchbar
+cd better-touchbar
+./install.sh              # or ./install.sh --turkish for the TR letters
 ```
 
-Options (edit `ExecStart` in `touchbar-cat.service`): `--idle SECONDS` (60),
-`--brightness 1|2` (1), `--pause-min`/`--pause-max` seconds between scenes (2/6),
-`--only GESTURE`, `--flip-across` if the cat shows up upside down on another model.
+Log out and back in once so GNOME Shell loads the focus extension. Without it everything works,
+except that media controls show up whenever something plays (not only for the focused app) and
+there are no per-app buttons.
 
-Uninstall: `sudo systemctl disable --now touchbar-cat && sudo rm -r /usr/local/lib/touchbar-cat /etc/systemd/system/touchbar-cat.service`
+Remove it again with `./install.sh --uninstall`; tiny-dfr takes the bar back.
+
+## Configure
+
+The layout lives in `/etc/touchbar/touchbar.toml`. Each button shows an `icon` (an SVG from
+`icons/`), `text`, `time` or `battery`, and does one of `key` (a Linux key name or a combo),
+`slider`, `layer` or `toggle`. `stretch` makes a button wider. Per-app layouts go under
+`[apps]`, keyed by the app's desktop id. The shipped file documents every option. After editing:
+
+```sh
+sudo systemctl restart touchbar
+```
+
+`./install.sh` never overwrites your edited config; `--update-config` replaces it and keeps a
+dated copy.
+
+## How it works
+
+```
+                 appletbdrm (DRM)                      Touch Bar touchpad (evdev, grabbed)
+                        ▲                                          │
+      cairo, rotated    │                                          ▼
+ ┌──────────────────────┴──────────────────────────────────────────────────┐
+ │ touchbar.py (root, systemd)   layers · sliders · idle cat · uinput keys │
+ └──────────────────────┬──────────────────────────────────────────────────┘
+          JSON lines    │  runs as the logged-in user
+ ┌──────────────────────┴──────────────────────┐        ┌──────────────────────────┐
+ │ tb_agent.py   MPRIS · PipeWire · GSettings  │◀─D-Bus─│ GNOME Shell extension    │
+ └─────────────────────────────────────────────┘        │ (which app has focus)    │
+                                                        └──────────────────────────┘
+```
+
+- `touchbar.py` draws straight into a dumb buffer on the Touch Bar's DRM card. The panel is a
+  portrait 60×2008 display mounted sideways, so the cairo matrix rotates it.
+- It reads the touchpad directly and types through its own uinput keyboard. It also sets
+  brightness, keyboard light, Wi-Fi and Bluetooth through sysfs.
+- Media players, volume, notification settings and focus live in the user's session. The
+  daemon runs `tb_agent.py` as that user and talks to it over a pipe.
+- `t2-touchbar-fix` runs at boot and after every resume. It re-enumerates the display when its
+  probe times out and restarts the daemon once the re-registered devices have settled.
+
+## Troubleshooting
+
+```sh
+journalctl -u touchbar -f          # daemon log
+sudo tools/fbshot.py bar.png       # save what the Touch Bar shows as a PNG
+sudo tools/touch_sim.py tap 173    # fake a tap without a finger (x in bar pixels)
+```
+
+On a model whose panel or touch digitizer runs the other way, add `--flip-along` and/or
+`--touch-flip` to `ExecStart` in `/etc/systemd/system/touchbar.service`.
+
+## Development
+
+```sh
+./scripts/check.sh                        # hardware-free gate: ABI sizes, layouts, logic
+scripts/deploy.sh <ssh-host> [options]    # ship this checkout to a MacBook and install
+python3 touchbar.py --render-test         # draw every layer off-screen (needs pycairo)
+python3 touchbar.py --screenshots docs/screenshots
+scripts/fetch-icons.sh                    # regenerate icons/ from Material Symbols
+```
+
+## Credits
+
+- The [t2linux](https://t2linux.org) community, for the kernel, the wiki and the Touch Bar
+  display re-enumeration trick.
+- [tiny-dfr](https://github.com/AsahiLinux/tiny-dfr) is the Touch Bar daemon this replaces and
+  falls back to. better-touchbar is an independent implementation and contains no tiny-dfr code.
+- Icons: [Material Symbols](https://fonts.google.com/icons) by Google, Apache License 2.0.
+
+## License
+
+MIT, see [LICENSE](LICENSE). The icons keep their Apache 2.0 license (`icons/LICENSE`).

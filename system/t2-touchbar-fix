@@ -19,8 +19,11 @@ for d in /sys/bus/usb/devices/*; do
     reset=1
   fi
 done
-# touchbar-fallback.service sets the flag when touchbar.service keeps failing: tiny-dfr owns the bar then
-owner=touchbar.service
-[ -e /run/touchbar-fallback ] && owner=tiny-dfr.service
+# The bar belongs to touchbar.service, unless it keeps failing (touchbar-fallback.service sets the
+# flag) or better-touchbar is not installed: then tiny-dfr owns it.
+owner=tiny-dfr.service
+if systemctl is-enabled --quiet touchbar.service && [ ! -e /run/touchbar-fallback ]; then
+  owner=touchbar.service
+fi
 systemctl restart "$owner"
 echo "touchbar: reset=$reset owner=$owner $(systemctl is-active "$owner")"

@@ -1,0 +1,20 @@
+# Changelog
+
+All notable changes to this project are documented here. The format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
+[Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+### Added
+- Touch Bar daemon that takes over from tiny-dfr: control strip, Fn layer, uinput keyboard,
+  drawing straight into the appletbdrm scanout buffer.
+- Sliders for screen brightness, keyboard backlight and volume (tap, or touch and slide).
+- Media controls for the focused MPRIS player: transport, title/artist, seekable timeline.
+- Per-app buttons for VS Code, Google Chrome and GNOME Terminal, driven by a GNOME Shell
+  extension that reports the focused app.
+- Quick settings: Wi-Fi, Bluetooth, Do Not Disturb, Night Light, microphone (red while live).
+- Turkish letters through the Turkish (Alt-Q) layout.
+- Idle cat with six gestures.
+- `install.sh` (install, update, uninstall), tiny-dfr fallback after repeated failures,
+  boot/resume recovery (`t2-touchbar-fix`), `tools/fbshot.py` and `tools/touch_sim.py`.

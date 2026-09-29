@@ -181,6 +181,57 @@ def set_bar_brightness(level):
             f.write(str(level))
 
 
+# --- sysfs knobs the sliders and quick settings drive (root) ----------------------------
+def screen_backlight():
+    """The main display's backlight dir (intel_backlight, gmux_backlight...), not the bar's."""
+    dirs = [d for d in sorted(glob.glob("/sys/class/backlight/*")) if "appletb" not in d]
+    return dirs[0] if dirs else None
+
+
+def keyboard_backlight():
+    dirs = sorted(glob.glob("/sys/class/leds/*kbd_backlight*"))
+    return dirs[0] if dirs else None
+
+
+def read_level(path):
+    """Brightness as 0.0-1.0, or None when the device is missing."""
+    try:
+        with open(path + "/brightness") as cur, open(path + "/max_brightness") as top:
+            return int(cur.read()) / max(int(top.read()), 1)
+    except (OSError, TypeError, ValueError):
+        return None
+
+
+def write_level(path, value, floor=0.0):
+    with open(path + "/max_brightness") as f:
+        top = int(f.read())
+    with open(path + "/brightness", "w") as f:
+        f.write(str(round(max(floor, min(1.0, value)) * top)))
+
+
+def rfkill_enabled(kind):
+    """Radio on? kind is the rfkill type ('wlan', 'bluetooth'); None if there is no such radio."""
+    states = []
+    for d in glob.glob("/sys/class/rfkill/rfkill*"):
+        try:
+            with open(d + "/type") as f:
+                if f.read().strip() != kind:
+                    continue
+            with open(d + "/soft") as s, open(d + "/hard") as h:
+                states.append(s.read().strip() == "0" and h.read().strip() == "0")
+        except OSError:
+            pass
+    return any(states) if states else None
+
+
+def rfkill_set(kind, on):
+    for d in glob.glob("/sys/class/rfkill/rfkill*"):
+        with open(d + "/type") as f:
+            if f.read().strip() == kind:
+                with open(d + "/soft", "w") as s:
+                    s.write("0" if on else "1")
+
+
 # --- evdev / uinput (include/uapi/linux/input.h, uinput.h) ------------------------------
 EVENT = struct.Struct("llHHi")      # struct input_event on x86_64 (24 bytes)
 EV_SYN, EV_KEY, EV_ABS = 0, 1, 3
@@ -204,6 +255,9 @@ KEYS = {
     "VOLUMEDOWN": 114, "VOLUMEUP": 115, "LEFTMETA": 125, "NEXTSONG": 163, "PLAYPAUSE": 164,
     "PREVIOUSSONG": 165, "SEARCH": 217, "BRIGHTNESSDOWN": 224, "BRIGHTNESSUP": 225,
     "KBDILLUMDOWN": 229, "KBDILLUMUP": 230, "MICMUTE": 248, "FN": 464,
+    "LEFTBRACE": 26, "RIGHTBRACE": 27, "SEMICOLON": 39, "APOSTROPHE": 40, "GRAVE": 41,
+    "BACKSLASH": 43, "COMMA": 51, "DOT": 52, "SLASH": 53, "CAPSLOCK": 58, "RIGHTCTRL": 97,
+    "INSERT": 110, "RIGHTMETA": 126,
     **{str(i % 10): 1 + i for i in range(1, 11)},                       # 1..9, 0
     **{f"F{i}": 58 + i for i in range(1, 11)}, "F11": 87, "F12": 88,
     **{f"F{i}": 170 + i for i in range(13, 25)},                        # F13 = 183

@@ -1,5 +1,5 @@
 [Unit]
-Description=Touch Bar daemon (control strip, Fn keys, idle cat) for T2 MacBooks
+Description=better-touchbar: Touch Bar daemon for T2 MacBooks
 After=systemd-user-sessions.service
 # Five crashes in a minute -> give the bar back to tiny-dfr instead of leaving it dead.
 StartLimitIntervalSec=60

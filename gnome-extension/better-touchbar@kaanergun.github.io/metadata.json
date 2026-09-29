@@ -1,0 +1,7 @@
+{
+  "uuid": "better-touchbar@kaanergun.github.io",
+  "name": "better-touchbar focus bridge",
+  "description": "Tells the better-touchbar daemon which app has focus, so the Touch Bar can show that app's buttons and media controls. GNOME on Wayland offers no other way to know.",
+  "shell-version": ["45", "46", "47", "48", "49"],
+  "url": "https://github.com/KaanErgun/better-touchbar"
+}
