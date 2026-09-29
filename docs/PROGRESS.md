@@ -1,6 +1,6 @@
 # PROGRESS — better-touchbar
 
-Tek yaşayan durum çizelgesi. Ölçüm: 2026-09-29 (v0.1.0 + belge seti + betik iskeleti).
+Tek yaşayan durum çizelgesi. Ölçüm: 2026-09-29 (v0.2.0).
 Kapsam ve kararlar `development.md`'de; kanıtlar `dev-log.md`'de.
 
 ## Yayın
@@ -8,6 +8,7 @@ Kapsam ve kararlar `development.md`'de; kanıtlar `dev-log.md`'de.
 - [x] v0.1.0 public — github.com/KaanErgun/better-touchbar (2026-09-29)
 - [x] `projects/active/`'e taşındı, belge seti (2026-09-29)
 - [x] Betikler `~/Developments` §7 iskeletinde: `scripts/dev.sh` fiil dağıtıcı, `install.sh` fiiller + yedek + idempotent (2026-09-29)
+- [x] v0.2.0 — betik iskeleti sürümü, annotated etiket (2026-09-29)
 
 ## Donanımda doğrulandı (MacBookPro16,2, Ubuntu 24.04, t2 7.1.8)
 

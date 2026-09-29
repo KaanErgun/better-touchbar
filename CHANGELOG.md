@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-29
+
 ### Changed
 - `install.sh` takes verbs (`install`, `uninstall`, `status`; `--uninstall` still works), backs up
   every file it replaces or removes under `/var/backups/better-touchbar/`, and verifies the service.
@@ -29,5 +31,6 @@ First public release.
 - `install.sh` (install, update, uninstall), tiny-dfr fallback after repeated failures,
   boot/resume recovery (`t2-touchbar-fix`), `tools/fbshot.py` and `tools/touch_sim.py`.
 
-[Unreleased]: https://github.com/KaanErgun/better-touchbar/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/KaanErgun/better-touchbar/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/KaanErgun/better-touchbar/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/KaanErgun/better-touchbar/releases/tag/v0.1.0
