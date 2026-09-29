@@ -7,6 +7,7 @@ Kapsam ve kararlar `development.md`'de; kanıtlar `dev-log.md`'de.
 
 - [x] v0.1.0 public — github.com/KaanErgun/better-touchbar (2026-09-29)
 - [x] `projects/active/`'e taşındı, belge seti (2026-09-29)
+- [x] Betikler `~/Developments` §7 iskeletinde: `scripts/dev.sh` fiil dağıtıcı, `install.sh` fiiller + yedek + idempotent (2026-09-29)
 
 ## Donanımda doğrulandı (MacBookPro16,2, Ubuntu 24.04, t2 7.1.8)
 
@@ -26,5 +27,4 @@ Kapsam ve kararlar `development.md`'de; kanıtlar `dev-log.md`'de.
 - [ ] Kaan testi: Chrome'da YouTube — pencere odaktayken medya katmanı, başka pencerede yok
 - [ ] Kaan testi: ses slider'ını parmakla sürükleme
 - [ ] Pilde gerçek kullanımda uzun uyku/uyanma (rtcwake testleri geçti)
-- [x] Betikler `~/Developments` §7 iskeletinde: `scripts/dev.sh` fiil dağıtıcı, `install.sh` fiiller + yedek + idempotent (2026-09-29)
 - [ ] Başka T2 modeli (16,1 / 15,x) — donanım yok; `--flip-along` / `--touch-flip` bayrakları hazır
