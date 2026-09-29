@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-09-29
+
+First public release.
+
 ### Added
 - Touch Bar daemon that takes over from tiny-dfr: control strip, Fn layer, uinput keyboard,
   drawing straight into the appletbdrm scanout buffer.
@@ -18,3 +22,6 @@ All notable changes to this project are documented here. The format follows
 - Idle cat with six gestures.
 - `install.sh` (install, update, uninstall), tiny-dfr fallback after repeated failures,
   boot/resume recovery (`t2-touchbar-fix`), `tools/fbshot.py` and `tools/touch_sim.py`.
+
+[Unreleased]: https://github.com/KaanErgun/better-touchbar/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/KaanErgun/better-touchbar/releases/tag/v0.1.0
