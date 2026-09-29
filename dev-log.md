@@ -107,3 +107,13 @@ bağımlılığı eklemeden, K-006) yapılıyor.
 **Çıkmaz:** `status` yardımcı için "2 process" gösterdi.
 **Neden:** `runuser` sarmalayıcısının komut satırında da `tb_agent.py` geçiyor.
 **Kural:** Süreç sayarken sarmalayıcıyı dışla (`pgrep -fa … | grep -vc runuser`) — kodda uygulandı.
+
+---
+
+## 2026-09-29 — Sürüm v0.2.0
+**Yapıldı:** `CHANGELOG.md` `[Unreleased]` → `[0.2.0] - 2026-09-29` (+ karşılaştırma bağlantıları);
+`docs/PROGRESS.md` Yayın maddesi; `chore(release): 0.2.0` commit'i ve annotated `v0.2.0`. Sürüm dizesi
+taşıyan manifest yok (`git grep` 0 eşleşme); sürümün tek kaynağı CHANGELOG + etiket. Kod değişikliği
+yapılmadı.
+**Sonuç:** ✅ Kapı exit 0; uzak `main` = `878cbbc`, `refs/tags/v0.2.0^{}` = `878cbbc`; anonim
+`releases/tag/v0.2.0`, `compare/v0.1.0...v0.2.0`, `blob/v0.2.0/CHANGELOG.md` 200 / 200 / 200.
